@@ -1,0 +1,22 @@
+How to handle missing values when importing CSV in PostgreSQL? 
+
+How do you convert a column with 'None' values into numeric during import?
+
+Is this corect way to converts any value 'None' in the population column into NULL and cast  it to float?
+
+CREATE TABLE population AS
+SELECT
+    region,
+    country_code,
+    year,
+    (NULLIF(population, 'None')::DOUBLE PRECISION * 1000)::BIGINT AS population
+FROM population_raw;
+
+
+NULLIF(population, 'None') – This converts any value 'None' in the population column into NULL. Without this, PostgreSQL would fail to cast 'None' into a number.
+
+::DOUBLE PRECISION – Casts the text (or numeric string) into a floating-point number.
+
+* 1000 – Multiplies the number to adjust units (your CSV had population in thousands).
+
+::BIGINT – Converts the final number into an integer type.
